@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import argparse
 
-
 #TODO: video processing
 def process(input='', output=''):
     img = mpimg.imread(input)
@@ -41,7 +40,7 @@ def process(input='', output=''):
     lines = cv2.HoughLinesP(masked_edges, rho, theta, threshold, np.array([]), min_line_length, max_line_gap) 
     
     #draw
-    #if lines is None:
+    #TODO: if lines is None:
     for line in lines:
         for x1,y1,x2,y2 in line:
             thickness = 6
@@ -50,16 +49,22 @@ def process(input='', output=''):
     
     color_edges = np.dstack((img_edge,img_edge,img_edge))
     lines_edges = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0)
+
+    #save
+    if (output != ''):
+        cv2.imwrite(output + '/' + 'image' + '.jpg', lines_edges)
     
     #show
     #cv2.imshow('virgin image', img)
     #cv2.imshow('gray image', img_grey)
     #cv2.imshow('gaussian blur', img_gaus)
     #cv2.imshow('edges', img_edge)
-    #cv2.imshow('mask', mask)
-    #plt.imshow(masked_edges)
-    plt.imshow(lines_edges)
-    plt.show()
+    #cv2.imshow('mask', mask) #region of interest
+    #TODO: cannot show multiple images
+    cv2.imshow('masked edges', masked_edges)
+    #cv2.imshow('lin', lines_edges)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Detect lines on your image')
