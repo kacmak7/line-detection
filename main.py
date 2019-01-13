@@ -1,13 +1,13 @@
-import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+import argparse
 
-image_path = 'input/solidWhiteRight.jpg';
 
-def process(image):
-    img = mpimg.imread(image_path)
+#TODO: video processing
+def process(input='', output=''):
+    img = mpimg.imread(input)
     if len(img.shape) > 2:
         img_grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     else:
@@ -61,9 +61,20 @@ def process(image):
     plt.imshow(lines_edges)
     plt.show()
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Detect lines on your image')
+    parser.add_argument('-i', '--i', help='Specify path of input image', type=str, required=False, dest = 'input')
+    parser.add_argument('-o', '--o', help='Specify path of output directory', type=str, required=False, dest = 'output')
+    args = parser.parse_args()
 
+    if (args.input):
+        input_path = args.input
+    else:
+        input_path = 'input/solidWhiteRight.jpg';
 
+    if (args.output):
+        output_path = args.output
+    else:
+        output_path = ''
 
-
-
-process(image_path)
+    process(input_path, output_path)
