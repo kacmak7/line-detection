@@ -4,11 +4,13 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import argparse
 import imghdr
+#from moviepy.editor import VideoFileClip
+#from IPython.display import HTML
 
 #TODO: video processing
 def process(input='', output=''):
 
-    def pipeline(img):
+    def pipeline(img): #img has to be 960x540
         if len(img.shape) > 2:
             img_grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         else:
@@ -33,7 +35,7 @@ def process(input='', output=''):
         masked_edges = cv2.bitwise_and(img_edge, mask)
      
         rho = 2                         #resolution of 'r'
-        theta = np.pi/180               #degrees    
+        theta = np.pi/180               
         threshold = 150                 #minimum number of intersections to detect a line
         min_line_length = 110           #minimum length of line to detect it
         max_line_gap = 80               #merge broken white lines
@@ -42,12 +44,12 @@ def process(input='', output=''):
         lines = cv2.HoughLinesP(masked_edges, rho, theta, threshold, np.array([]), min_line_length, max_line_gap) 
 
         #draw
-        #TODO: if lines is None:
-        for line in lines:
-            for x1,y1,x2,y2 in line:
-                thickness = 6
-                color = (255,0,0) #blue
-                cv2.line(line_image,(x1,y1),(x2,y2),color,thickness)
+        if lines is not None:
+            for line in lines:
+                for x1,y1,x2,y2 in line:
+                    thickness = 6
+                    color = (255,0,0) #blue
+                    cv2.line(line_image,(x1,y1),(x2,y2),color,thickness)
     
         color_edges = np.dstack((img_edge,img_edge,img_edge))
         lines_edges = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0)
@@ -72,13 +74,21 @@ def process(input='', output=''):
 
    
     # START
-    #check if input is an image
+    #check if input is an image or video
+    video_formats = ('.avi', '.mp4')
     if (imghdr.what(input)):
         img = mpimg.imread(input) # RGB
         pipeline(img)
     
-    #TODO: video recognition
-    #elif ():
+    elif (input.lower().endswith(video_formats)):
+        video = cv2.VideoCapture(input)
+
+        while True:
+            ret, frame = video.read()
+            cv2.imshow(frame)
+            
+            if not ret:
+                video = cv2.VideoCapture(input)
 
     else:
         print('Bad input resource')
