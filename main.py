@@ -66,9 +66,6 @@ def process(input='', output=''):
         #cv2.imshow('mask', mask) #region of interest
         #cv2.imshow('masked edges', masked_edges)
         cv2.imshow('lin', lines_edges)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        
         #TODO: return original image with marked lines
     
 
@@ -76,20 +73,28 @@ def process(input='', output=''):
     # START
     #check if input is an image or video
     video_formats = ('.avi', '.mp4')
+
+    # IMAGE
     if (imghdr.what(input)):
         img = mpimg.imread(input) # RGB
         pipeline(img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
     
+    # VIDEO
     elif (input.lower().endswith(video_formats)):
-        video = cv2.VideoCapture(input)
+        cap = cv2.VideoCapture(input)
 
         while True:
-            ret, frame = video.read()
-            cv2.imshow(frame)
-            
-            if not ret:
-                video = cv2.VideoCapture(input)
+            ret, frame = cap.read()
+            pipeline(frame)
+            if cv2.waitKey(50) & 0xFF == ord('q'): #for 20 fps videos
+                break
 
+        cap.release()
+        cv2.destroyAllWindows()
+
+    # ERROR
     else:
         print('Bad input resource')
         
