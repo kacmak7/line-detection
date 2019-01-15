@@ -54,10 +54,6 @@ def process(input='', output=''):
         color_edges = np.dstack((img_edge,img_edge,img_edge))
         lines_edges = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0)
 
-        #save
-        if (output != ''):
-            cv2.imwrite(output + '/' + 'image' + '.jpg', lines_edges)
-
         #show
         #cv2.imshow('virgin image', img)
         #cv2.imshow('gray image', img_grey)
@@ -67,6 +63,7 @@ def process(input='', output=''):
         #cv2.imshow('masked edges', masked_edges)
         cv2.imshow('lin', lines_edges)
         #TODO: return original image with marked lines
+        return lines_edges
     
 
    
@@ -77,7 +74,12 @@ def process(input='', output=''):
     # IMAGE
     if (imghdr.what(input)):
         img = mpimg.imread(input) # RGB
-        pipeline(img)
+        
+        if (output != ''):
+            cv2.imwrite(output + '/' + 'image' + '.jpg', pipeline(img))
+        else:
+            pipeline(img)
+
         cv2.waitKey(0)
         cv2.destroyAllWindows()
     
@@ -85,11 +87,21 @@ def process(input='', output=''):
     elif (input.lower().endswith(video_formats)):
         cap = cv2.VideoCapture(input)
 
-        while True:
-            ret, frame = cap.read()
-            pipeline(frame)
-            if cv2.waitKey(50) & 0xFF == ord('q'): #for 20 fps videos
-                break
+        if (output != ''):
+            fourcc = cv2.VideoWriter_fourcc(*'X264')
+            out = cv2.VideoWriter(output + '/' + 'video' + '.mp4', fourcc, 15.0, (960, 540))
+
+            while True:
+                ret, frame = cap.read()
+                out.write(pipeline(frame))
+                if cv2.waitKey(50) & 0xFF == ord('q'): #for 20 fps videos
+                    break
+        else: 
+            while True:
+                ret, frame = cap.read()
+                pipeline(frame)
+                if cv2.waitKey(50) & 0xFF == ord('q'): #for 20fps videos
+                    break
 
         cap.release()
         cv2.destroyAllWindows()
