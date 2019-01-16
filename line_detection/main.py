@@ -120,7 +120,7 @@ if __name__ == '__main__':
     if (args.input):
         input_path = args.input
     else:
-        input_path = 'input/solidWhiteRight.jpg';
+        input_path = '';
 
     if (args.output):
         output_path = args.output
