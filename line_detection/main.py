@@ -111,7 +111,7 @@ def process(input='', output=''):
         print('Bad input resource')
         
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description='Detect lines on your image')
     parser.add_argument('-i', '--i', help='Specify path of input file', type=str, required=False, dest = 'input')
     parser.add_argument('-o', '--o', help='Specify path of output directory', type=str, required=False, dest = 'output')
@@ -128,3 +128,6 @@ if __name__ == '__main__':
         output_path = ''
 
     process(input_path, output_path)
+
+if __name__ == '__main__':
+    main()
