@@ -21,7 +21,7 @@ setuptools.setup(
         ],
         entry_points={
             'console_scripts': [
-                'linedetect = line_detection.main:main'
+                'linedetect = line_detection.line_detection:main'
                 ]
             },
 )
