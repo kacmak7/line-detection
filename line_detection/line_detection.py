@@ -53,15 +53,7 @@ def process(input='', output=''):
     
         color_edges = np.dstack((img_edge,img_edge,img_edge))
         lines_edges = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0)
-
-        #show
-        #cv2.imshow('virgin image', img)
-        #cv2.imshow('gray image', img_grey)
-        #cv2.imshow('gaussian blur', img_gaus)
-        cv2.imshow('edges', img_edge)
-        #cv2.imshow('mask', mask) #region of interest
-        #cv2.imshow('masked edges', masked_edges)
-        cv2.imshow('lin', lines_edges)
+        
         #TODO: return original image with marked lines
         return lines_edges
     
@@ -75,14 +67,17 @@ def process(input='', output=''):
     if (imghdr.what(input)):
         img = mpimg.imread(input) # RGB
         
-        if (output != ''):
-            cv2.imwrite(output + '/' + 'image' + '.jpg', pipeline(img))
-        else:
-            pipeline(img)
+        result = pipeline(img)
 
+        cv2.imshow('Result', result)
+        print('Result opened in new window')
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-    
+ 
+        if (output != ''):
+            cv2.imwrite(output + '/' + 'image' + '.jpg', result)
+            print('Processed image has been saved')
+
     # VIDEO
     elif (input.lower().endswith(video_formats)):
         cap = cv2.VideoCapture(input)
