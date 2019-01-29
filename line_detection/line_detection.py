@@ -89,7 +89,9 @@ def process(input='', output='', silent=False):
         if (output != ''):
             fourcc = cv2.VideoWriter_fourcc(*'X264')
             out = cv2.VideoWriter(output + '/' + 'video' + '.mp4', fourcc, 15.0, (960, 540))
-
+            
+            #TODO: minimize code here
+            #TODO: avoid code repetition, do not slow frame processing !
             while True:
                 ret, frame = cap.read()
                 out.write(pipeline(frame))
@@ -98,7 +100,8 @@ def process(input='', output='', silent=False):
         else: 
             while True:
                 ret, frame = cap.read()
-                pipeline(frame)
+                result = pipeline(frame)
+                cv2.imshow('video', result)
                 if cv2.waitKey(50) & 0xFF == ord('q'): #for 20fps videos
                     break
 
@@ -108,7 +111,7 @@ def process(input='', output='', silent=False):
     # ERROR
     else:
         print('Bad input resource')
-        
+    print('Exiting...')  
 
 def main():
     parser = argparse.ArgumentParser(description='Detect lines on your image')
