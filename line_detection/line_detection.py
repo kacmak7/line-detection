@@ -8,7 +8,7 @@ import imghdr
 #from IPython.display import HTML
 
 #TODO: video processing
-def process(input='', output=''):
+def process(input='', output='', silent=False):
 
     def pipeline(img): #img has to be 960x540
         if len(img.shape) > 2:
@@ -60,7 +60,7 @@ def process(input='', output=''):
 
    
     # START
-    #check if input is an image or video
+
     video_formats = ('.avi', '.mp4')
 
     # IMAGE
@@ -69,10 +69,14 @@ def process(input='', output=''):
         
         result = pipeline(img)
 
-        cv2.imshow('Result', result)
-        print('Result opened in new window')
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # satisfy options:
+        if silent:
+            print('Silent mode is ON')
+        else:
+            cv2.imshow('Result', result)
+            print('Result opened in a new window')
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
  
         if (output != ''):
             cv2.imwrite(output + '/' + 'image' + '.jpg', result)
@@ -108,21 +112,29 @@ def process(input='', output=''):
 
 def main():
     parser = argparse.ArgumentParser(description='Detect lines on your image')
-    parser.add_argument('-i', '--i', help='Specify path of input file', type=str, required=False, dest = 'input')
-    parser.add_argument('-o', '--o', help='Specify path of output directory', type=str, required=False, dest = 'output')
+    parser.add_argument('-i', '--input', help='specify path of input file', type=str, required=False, dest = 'input')
+    parser.add_argument('-o', '--output', help='specify path of output directory', type=str, required=False, dest = 'output')
+    parser.add_argument('-s', '--silent', help='silent mode - no popup windows', action='store_true')
     args = parser.parse_args()
+    
+    #TODO: minimalize code here
 
     if (args.input):
         input_path = args.input
     else:
-        input_path = '';
+        input_path = ''
 
     if (args.output):
         output_path = args.output
     else:
         output_path = ''
 
-    process(input_path, output_path)
+    if (args.silent): #boolean
+        silent = args.silent
+    else:
+        silent = False
+
+    process(input_path, output_path, silent)
 
 if __name__ == '__main__':
     main()
