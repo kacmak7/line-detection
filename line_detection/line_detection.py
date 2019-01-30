@@ -8,7 +8,7 @@ import imghdr
 #from IPython.display import HTML
 
 #TODO: video processing
-def process(input='', output=''):
+def process(input='', output='', silent=False):
 
     def pipeline(img): #img has to be 960x540
         if len(img.shape) > 2:
@@ -53,36 +53,35 @@ def process(input='', output=''):
     
         color_edges = np.dstack((img_edge,img_edge,img_edge))
         lines_edges = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0)
-
-        #show
-        #cv2.imshow('virgin image', img)
-        #cv2.imshow('gray image', img_grey)
-        #cv2.imshow('gaussian blur', img_gaus)
-        cv2.imshow('edges', img_edge)
-        #cv2.imshow('mask', mask) #region of interest
-        #cv2.imshow('masked edges', masked_edges)
-        cv2.imshow('lin', lines_edges)
+        
         #TODO: return original image with marked lines
         return lines_edges
     
 
    
     # START
-    #check if input is an image or video
+
     video_formats = ('.avi', '.mp4')
 
     # IMAGE
     if (imghdr.what(input)):
         img = mpimg.imread(input) # RGB
         
-        if (output != ''):
-            cv2.imwrite(output + '/' + 'image' + '.jpg', pipeline(img))
-        else:
-            pipeline(img)
+        result = pipeline(img)
 
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-    
+        # satisfy options:
+        if silent:
+            print('Silent mode is ON')
+        else:
+            cv2.imshow('Result', result)
+            print('Result opened in a new window')
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+ 
+        if (output != ''):
+            cv2.imwrite(output + '/' + 'image' + '.jpg', result)
+            print('Processed image has been saved')
+
     # VIDEO
     elif (input.lower().endswith(video_formats)):
         cap = cv2.VideoCapture(input)
@@ -90,7 +89,9 @@ def process(input='', output=''):
         if (output != ''):
             fourcc = cv2.VideoWriter_fourcc(*'X264')
             out = cv2.VideoWriter(output + '/' + 'video' + '.mp4', fourcc, 15.0, (960, 540))
-
+            
+            #TODO: minimize code here
+            #TODO: avoid code repetition, do not slow frame processing !
             while True:
                 ret, frame = cap.read()
                 out.write(pipeline(frame))
@@ -99,7 +100,8 @@ def process(input='', output=''):
         else: 
             while True:
                 ret, frame = cap.read()
-                pipeline(frame)
+                result = pipeline(frame)
+                cv2.imshow('video', result)
                 if cv2.waitKey(50) & 0xFF == ord('q'): #for 20fps videos
                     break
 
@@ -109,25 +111,33 @@ def process(input='', output=''):
     # ERROR
     else:
         print('Bad input resource')
-        
+    print('Exiting...')  
 
 def main():
     parser = argparse.ArgumentParser(description='Detect lines on your image')
-    parser.add_argument('-i', '--i', help='Specify path of input file', type=str, required=False, dest = 'input')
-    parser.add_argument('-o', '--o', help='Specify path of output directory', type=str, required=False, dest = 'output')
+    parser.add_argument('-i', '--input', help='specify path of input file', type=str, required=False, dest = 'input')
+    parser.add_argument('-o', '--output', help='specify path of output directory', type=str, required=False, dest = 'output')
+    parser.add_argument('-s', '--silent', help='silent mode - no popup windows', action='store_true')
     args = parser.parse_args()
+    
+    #TODO: minimalize code here
 
     if (args.input):
         input_path = args.input
     else:
-        input_path = '';
+        input_path = ''
 
     if (args.output):
         output_path = args.output
     else:
         output_path = ''
 
-    process(input_path, output_path)
+    if (args.silent): #boolean
+        silent = args.silent
+    else:
+        silent = False
+
+    process(input_path, output_path, silent)
 
 if __name__ == '__main__':
     main()
