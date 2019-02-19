@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import argparse
 import imghdr
-#from moviepy.editor import VideoFileClip
-#from IPython.display import HTML
 
 #TODO: video processing
 def process(input='', output='', silent=False):
@@ -102,7 +100,7 @@ def process(input='', output='', silent=False):
                 ret, frame = cap.read()
                 result = pipeline(frame)
                 cv2.imshow('video', result)
-                if cv2.waitKey(50) & 0xFF == ord('q'): #for 20fps videos
+                if cv2.waitKey(50) & 0xFF == ord('q'): #for 20 fps videos
                     break
 
         cap.release()
@@ -111,7 +109,7 @@ def process(input='', output='', silent=False):
     # ERROR
     else:
         print('Bad input resource')
-    print('Exiting...')  
+        print('Exiting...')  
 
 def main():
     parser = argparse.ArgumentParser(description='Detect lines on your image')
