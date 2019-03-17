@@ -28,7 +28,7 @@ def process(input='', output='', silent=False):
             ignore_mask_color = 255
     
         imshape = img.shape
-        vertices = np.array([[(0,imshape[0]),(450,290),(490,290),(imshape[1],imshape[0])]],dtype=np.int32)
+        vertices = np.array([[(0,imshape[0]),(900,300),(1120,300),(imshape[1],imshape[0])]],dtype=np.int32)
         cv2.fillPoly(mask, vertices, ignore_mask_color)
         masked_edges = cv2.bitwise_and(img_edge, mask)
      
@@ -54,8 +54,6 @@ def process(input='', output='', silent=False):
         
         #TODO: return original image with marked lines
         return lines_edges
-    
-
    
     # START
 
