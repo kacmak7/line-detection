@@ -22,7 +22,7 @@ else:
 
 mask = np.zeros_like(img)
 imshape = img.shape
-vertices = np.array([[(0,imshape[0]),(900,300),(1120,300),(imshape[1],imshape[0])]],dtype=np.int32)
+vertices = np.array([[(745,475),(1030,475),(1500,685),(1450,685),(1450,740),(1220,735),(970,675),(620,750),(620,540)]],dtype=np.int32)
 cv2.fillPoly(mask, vertices, ignore_mask_color)
 
 # write and show

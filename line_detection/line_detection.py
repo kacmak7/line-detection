@@ -8,7 +8,7 @@ import imghdr
 #TODO: video processing
 def process(input='', output='', silent=False):
 
-    def pipeline(img): #img has to be 960x540
+    def pipeline(img): #img has to be 1920x1080
         if len(img.shape) > 2:
             img_grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         else:
@@ -28,7 +28,7 @@ def process(input='', output='', silent=False):
             ignore_mask_color = 255
     
         imshape = img.shape
-        vertices = np.array([[(0,imshape[0]),(900,300),(1120,300),(imshape[1],imshape[0])]],dtype=np.int32)
+        vertices = np.array([[(745,475),(1030,475),(1500,685),(1450,685),(1450,740),(1220,735),(970,675),(620,750),(620,540)]],dtype=np.int32)
         cv2.fillPoly(mask, vertices, ignore_mask_color)
         masked_edges = cv2.bitwise_and(img_edge, mask)
      
